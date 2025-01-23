@@ -7,8 +7,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Person {
+  id            Int     @id @default(autoincrement()) @map("id")
+  dni           String  @unique @map("dni")
+  email         String? @unique @map("email")
+  firstName     String  @map("first_name")
+  secondName    String? @map("second_name")
+  firstSurname  String  @map("first_surname")
+  secondSurname String? @map("second_surname")
+
+  users User[]
+
+  @@map("people")
+}
+
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id       Int      @id @default(autoincrement())
+  username String   @unique @map("username")
+  password String   @map("password")
+  role     UserRole @default(USER) @map("role")
+
+  personId Int    @map("person_id")
+  person   Person @relation(fields: [personId], references: [id])
+
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }

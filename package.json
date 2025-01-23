@@ -13,7 +13,9 @@
     "debug": "nest start --debug --watch",
     "prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:reset": "prisma db push --force-reset",
+    "db:seed": "prisma db push --force-reset && prisma db seed"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -48,5 +50,8 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
