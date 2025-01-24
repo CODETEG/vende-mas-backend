@@ -9,6 +9,6 @@ export class AppController {
   @Get()
   @ApiMessage(['Probando'], true)
   getHello(): string {
-    return this.appService.getHello()
+    return 'Hello World!'
   }
 }

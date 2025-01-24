@@ -4,6 +4,7 @@ import { Logger, ValidationPipe } from '@nestjs/common'
 import { ResponseInterceptor } from './core/interceptor/response.interceptor'
 import { GlobalExceptionFilter } from './core/filters/all-exception.filter'
 import { useContainer } from 'class-validator'
+import { CustomConfigService } from './core/config/config.service'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -18,7 +19,8 @@ async function bootstrap() {
   app.useGlobalFilters(new GlobalExceptionFilter())
   useContainer(app.select(AppModule), { fallbackOnErrors: true })
 
-  const port = process.env.PORT ?? 3000
+  const configService = app.get(CustomConfigService)
+  const port = configService.env.PORT
   await app.listen(port)
 
   Logger.log(`Server running on port ${port}`, 'Bootstrap')
