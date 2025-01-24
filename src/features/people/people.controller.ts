@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common'
 import { PeopleService } from './people.service'
 import { CreatePersonDto } from './dto/create-person.dto'
 import { UpdatePersonDto } from './dto/update-person.dto'
+import { PaginationDto } from 'src/core/dtos/pagination.dto'
 
 @Controller('people')
 export class PeopleController {
@@ -22,8 +24,8 @@ export class PeopleController {
   }
 
   @Get()
-  findAll() {
-    return this.peopleService.findAll()
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.peopleService.findAll(paginationDto)
   }
 
   @Get(':id')

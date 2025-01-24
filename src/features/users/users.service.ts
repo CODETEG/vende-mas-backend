@@ -4,6 +4,9 @@ import { UpdateUserDto } from './dto/update-user.dto'
 import { PrismaService } from 'src/core/prisma/prisma.service'
 import { hashPassword } from 'src/shared/lib/encrypter'
 import { DisplayableException } from 'src/core/exceptions/displayable.exception'
+import { User } from '@prisma/client'
+import { IPaginatedResponse } from 'src/core/types/api-response.interface'
+import { PaginationDto } from 'src/core/dtos/pagination.dto'
 
 @Injectable()
 export class UsersService {
@@ -20,10 +23,26 @@ export class UsersService {
     })
   }
 
-  async findAll() {
-    return await this.prismaService.user.findMany({
-      include: { person: true },
-    })
+  async findAll({
+    limit,
+    page,
+  }: PaginationDto): Promise<IPaginatedResponse<User>> {
+    const [entities, total] = await Promise.all([
+      this.prismaService.user.findMany({
+        take: limit,
+        skip: (page - 1) * limit,
+        include: { person: true },
+      }),
+      this.prismaService.user.count(),
+    ])
+
+    return {
+      records: entities,
+      total,
+      limit,
+      page,
+      pages: Math.ceil(total / limit),
+    }
   }
 
   async findOne(id: number) {
