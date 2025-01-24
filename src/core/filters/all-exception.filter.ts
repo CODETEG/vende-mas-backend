@@ -24,7 +24,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       data: null,
       message: {
         content: ['Ocurrió un error inesperado'],
-        displayable: true,
+        displayable: false,
       },
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -53,24 +53,18 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       switch (exception.code) {
         case 'P2002': // Unique constraint violation
           errorResponse.message.content = [
-            'Ya existe un registro con estos datos',
+            'Unique constraint violation on field',
           ]
           break
         case 'P2003': // Foreign key constraint violation
-          errorResponse.message.content = [
-            'La operación viola una restricción de integridad referencial',
-          ]
+          errorResponse.message.content = ['Invalid related record']
           break
         case 'P2025': // Record not found
           status = HttpStatus.NOT_FOUND
-          errorResponse.message.content = [
-            'No se encontró el registro solicitado',
-          ]
+          errorResponse.message.content = ['Record not found']
           break
         default:
-          errorResponse.message.content = [
-            'Error en la solicitud a la base de datos',
-          ]
+          errorResponse.message.content = ['Database operation error']
       }
     }
     // Handle other types of errors

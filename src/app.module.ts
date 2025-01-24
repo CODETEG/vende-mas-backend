@@ -4,10 +4,11 @@ import { AppService } from './app.service'
 import { PrismaModule } from './core/prisma/prisma.module'
 import { PeopleModule } from './features/people/people.module'
 import { ResponseInterceptor } from './core/interceptor/response.interceptor'
+import { IsUniqueConstraint } from './core/validators/unique.validator'
 
 @Module({
   imports: [PrismaModule, PeopleModule],
   controllers: [AppController],
-  providers: [AppService, ResponseInterceptor],
+  providers: [AppService, ResponseInterceptor, IsUniqueConstraint],
 })
 export class AppModule {}
