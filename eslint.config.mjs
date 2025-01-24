@@ -38,7 +38,9 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       'object-shorthand': ['error', 'always'],
-      'quotes': ['error', 'single']
+      'quotes': ['error', 'single'],
+      "@typescript-eslint/await-thenable": "error",
+      "@typescript-eslint/no-unnecessary-condition": "error"
     },
   },
 )

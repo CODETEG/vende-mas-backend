@@ -7,8 +7,9 @@ import { AppService } from './app.service'
 import { ResponseInterceptor } from './core/interceptor/response.interceptor'
 import { IsUniqueConstraint } from './core/validators/unique.validator'
 import { EntityExistsConstraint } from './core/validators/entity-exists.validator'
+import { AuthModule } from './features/auth/auth.module'
 @Module({
-  imports: [PrismaModule, PeopleModule, UsersModule],
+  imports: [PrismaModule, PeopleModule, UsersModule, AuthModule],
   controllers: [AppController],
   providers: [
     AppService,
