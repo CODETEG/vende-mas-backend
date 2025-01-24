@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { HttpStatus, Injectable } from '@nestjs/common'
 import { CreatePersonDto } from './dto/create-person.dto'
 import { UpdatePersonDto } from './dto/update-person.dto'
 import { PrismaService } from 'src/core/prisma/prisma.service'
+import { DisplayableException } from 'src/core/exceptions/displayable.exception'
 @Injectable()
 export class PeopleService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -22,7 +23,10 @@ export class PeopleService {
     })
 
     if (!entity)
-      throw new BadRequestException(`Person with id ${id} does not exist`)
+      throw new DisplayableException(
+        `La persona con id ${id} no existe`,
+        HttpStatus.NOT_FOUND,
+      )
 
     return entity
   }

@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { HttpStatus, Injectable } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { PrismaService } from 'src/core/prisma/prisma.service'
 import { hashPassword } from 'src/shared/lib/encrypter'
+import { DisplayableException } from 'src/core/exceptions/displayable.exception'
 
 @Injectable()
 export class UsersService {
@@ -32,7 +33,10 @@ export class UsersService {
     })
 
     if (!entity)
-      throw new BadRequestException(`User with id ${id} does not exist`)
+      throw new DisplayableException(
+        `El usuario con id ${id} no existe`,
+        HttpStatus.NOT_FOUND,
+      )
 
     return entity
   }
@@ -47,8 +51,9 @@ export class UsersService {
         })
 
       if (alreadyExistPersonAssociated)
-        throw new BadRequestException(
-          'Person already associated with another user',
+        throw new DisplayableException(
+          'Ya existe un usuario asociado a esta persona',
+          HttpStatus.CONFLICT,
         )
     }
 

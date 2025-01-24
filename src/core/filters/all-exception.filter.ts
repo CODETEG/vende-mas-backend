@@ -9,6 +9,7 @@ import {
 import { Request, Response } from 'express'
 import { Prisma } from '@prisma/client'
 import { IApiResponse } from '../types/api-response.interface'
+import { DisplayableException } from '../exceptions/displayable.exception'
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -24,7 +25,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       data: null,
       message: {
         content: ['Ocurrió un error inesperado'],
-        displayable: false,
+        displayable: true,
       },
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -37,10 +38,18 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toLocaleString(),
     })
 
+    if (exception instanceof DisplayableException) {
+      status = exception.getStatus()
+      errorResponse.message.content = Array.isArray(exception.getResponse())
+        ? (exception.getResponse() as string[])
+        : [exception.getResponse() as string]
+    }
     // Handle HttpExceptions
-    if (exception instanceof HttpException) {
+    else if (exception instanceof HttpException) {
       status = exception.getStatus()
       const errorMessage = exception.getResponse()
+
+      errorResponse.message.displayable = false
 
       errorResponse.message.content = Array.isArray(errorMessage['message'])
         ? errorMessage['message']
@@ -49,6 +58,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     // Handle Prisma specific errors
     else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
       status = HttpStatus.BAD_REQUEST
+      errorResponse.message.displayable = false
 
       switch (exception.code) {
         case 'P2002': // Unique constraint violation
@@ -69,6 +79,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     }
     // Handle other types of errors
     else if (exception instanceof Error) {
+      errorResponse.message.displayable = false
+
       errorResponse.message.content = [exception.message]
     }
 
