@@ -5,25 +5,30 @@ import {
   NestInterceptor,
 } from '@nestjs/common'
 import { map, Observable } from 'rxjs'
-import { ApiResponse } from '../types/api-response.response'
+import { IApiResponse } from '../types/api-response.interface'
+import { Reflector } from '@nestjs/core'
+import { getApiMessage } from '../decorators/api-message.decorator'
 
 @Injectable()
 export class ResponseInterceptor<T>
-  implements NestInterceptor<T, ApiResponse<T>>
+  implements NestInterceptor<T, IApiResponse<T>>
 {
+  constructor(private reflector: Reflector) {}
+
   intercept(
     context: ExecutionContext,
     next: CallHandler<T>,
-  ): Observable<ApiResponse<T>> | Promise<Observable<ApiResponse<T>>> {
+  ): Observable<IApiResponse<T>> | Promise<Observable<IApiResponse<T>>> {
     return next.handle().pipe(
-      map((data) => ({
-        success: true,
-        data,
-        message: {
-          content: ['Operacion Exitosa'],
-          displayable: true,
-        },
-      })),
+      map((data) => {
+        const message = getApiMessage(this.reflector, context)
+
+        return {
+          success: true,
+          data: data || null,
+          message,
+        }
+      }),
     )
   }
 }
