@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client'
 import {
+  IsBoolean,
   IsEmail,
   IsNotEmpty,
   IsOptional,
@@ -36,4 +37,8 @@ export class CreatePersonDto
   @IsString()
   @IsOptional()
   secondSurname?: string
+
+  @IsOptional()
+  @IsBoolean()
+  active?: boolean
 }

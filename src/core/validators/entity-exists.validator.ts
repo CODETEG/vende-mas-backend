@@ -24,7 +24,7 @@ export class EntityExistsConstraint implements ValidatorConstraintInterface {
         where: { [field]: value },
       })
 
-      if (entity) throw new BadRequestException(this.defaultMessage(args))
+      if (!entity) throw new BadRequestException(this.defaultMessage(args))
 
       return !!entity
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
