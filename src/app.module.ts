@@ -1,21 +1,32 @@
 import { Module } from '@nestjs/common'
-import { PrismaModule } from './core/prisma/prisma.module'
-import { PeopleModule } from './features/people/people.module'
-import { UsersModule } from './features/users/users.module'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
-import { ResponseInterceptor } from './core/interceptor/response.interceptor'
-import { IsUniqueConstraint } from './core/validators/unique.validator'
-import { EntityExistsConstraint } from './core/validators/entity-exists.validator'
-import { AuthModule } from './features/auth/auth.module'
+import { ResponseInterceptor } from './common/interceptors/response.interceptor'
+import { EntityExistsConstraint } from './common/validators/entity-exists.validator'
+import { IsUniqueConstraint } from './common/validators/unique.validator'
+import { AuthModule } from './core/auth/auth.module'
+import { PeopleModule } from './core/people/people.module'
+import { UsersModule } from './core/users/users.module'
+import { CustomConfigService } from './global/config/config.service'
+import { PrismaService } from './global/prisma/prisma.service'
+import { CustomConfigModule } from './global/config/config.module'
+import { PrismaModule } from './global/prisma/prisma.module'
 @Module({
-  imports: [PrismaModule, PeopleModule, UsersModule, AuthModule],
-  controllers: [AppController],
+  imports: [
+    PeopleModule,
+    UsersModule,
+    AuthModule,
+    CustomConfigModule,
+    PrismaModule,
+  ],
   providers: [
     AppService,
     ResponseInterceptor,
     IsUniqueConstraint,
     EntityExistsConstraint,
+    PrismaService,
+    CustomConfigService,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

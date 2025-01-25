@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { Logger, ValidationPipe } from '@nestjs/common'
-import { ResponseInterceptor } from './core/interceptor/response.interceptor'
-import { GlobalExceptionFilter } from './core/filters/all-exception.filter'
 import { useContainer } from 'class-validator'
-import { CustomConfigService } from './core/config/config.service'
+import { ResponseInterceptor } from './common/interceptors/response.interceptor'
+import { GlobalExceptionFilter } from './common/filters/all-exception.filter'
+import { CustomConfigService } from './global/config/config.service'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
