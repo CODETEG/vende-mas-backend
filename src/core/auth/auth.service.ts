@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
-import { LoginDto } from './dto/login.dto'
+import { SignInDto } from './dto/sign-in.dto'
 import { JwtService } from '@nestjs/jwt'
 import { IJwtPayload } from './types/jwt-payload.interface'
 import { DisplayableException } from 'src/common/exceptions/displayable.exception'
@@ -13,7 +13,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login({ username, password }: LoginDto) {
+  async signIn({ username, password }: SignInDto) {
     const user = await this.prismaService.user.findUnique({
       where: {
         username,
