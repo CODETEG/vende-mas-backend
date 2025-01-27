@@ -7,7 +7,7 @@ import { GlobalExceptionFilter } from './common/filters/all-exception.filter'
 import { CustomConfigService } from './global/config/config.service'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, { cors: true })
   app.setGlobalPrefix('api')
   app.useGlobalPipes(
     new ValidationPipe({
@@ -15,6 +15,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   )
+  app.enableCors()
   app.useGlobalInterceptors(app.get(ResponseInterceptor))
   app.useGlobalFilters(new GlobalExceptionFilter())
   useContainer(app.select(AppModule), { fallbackOnErrors: true })
