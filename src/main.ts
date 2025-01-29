@@ -15,7 +15,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   )
-  app.enableCors()
+  app.enableCors('*')
   app.useGlobalInterceptors(app.get(ResponseInterceptor))
   app.useGlobalFilters(new GlobalExceptionFilter())
   useContainer(app.select(AppModule), { fallbackOnErrors: true })
