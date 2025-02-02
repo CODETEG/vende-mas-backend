@@ -9,7 +9,7 @@ import {
 import { Request, Response } from 'express'
 import { Prisma } from '@prisma/client'
 import { DisplayableException } from '../exceptions/displayable.exception'
-import { IApiResponse } from '../types/api-response.interface'
+import { IApiRes } from '../types/api-response.interface'
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -20,7 +20,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>()
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR
-    const errorResponse: IApiResponse<null> = {
+    const errorResponse: IApiRes<null> = {
       success: false,
       data: null,
       message: {

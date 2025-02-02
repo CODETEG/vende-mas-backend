@@ -3,16 +3,16 @@ export interface IApiMessage {
   displayable: boolean
 }
 
-export interface IApiResponse<T> {
+export interface IApiRes<T> {
   success: boolean
-  data: T | null
   message: IApiMessage
+  data: T | null
 }
 
-export interface IPaginatedResponse<T> {
-  records: T[]
+export interface IApiPaginatedRes<T> {
   total: number
   limit: number
   page: number
   pages: number
+  records: T[]
 }

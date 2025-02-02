@@ -4,7 +4,7 @@ import { UpdatePersonDto } from './dto/update-person.dto'
 import { Person } from '@prisma/client'
 import { PaginationDto } from 'src/common/dtos/pagination.dto'
 import { DisplayableException } from 'src/common/exceptions/displayable.exception'
-import { IPaginatedResponse } from 'src/common/types/api-response.interface'
+import { IApiPaginatedRes } from 'src/common/types/api-response.interface'
 import { PrismaService } from 'src/global/prisma/prisma.service'
 @Injectable()
 export class PeopleService {
@@ -19,7 +19,7 @@ export class PeopleService {
   async findAll({
     limit,
     page,
-  }: PaginationDto): Promise<IPaginatedResponse<Person>> {
+  }: PaginationDto): Promise<IApiPaginatedRes<Person>> {
     const [entities, total] = await Promise.all([
       this.prismaService.person.findMany({
         take: limit,
