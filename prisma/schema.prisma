@@ -8,18 +8,44 @@ datasource db {
 }
 
 model Person {
-  id            Int     @id @default(autoincrement()) @map("id")
-  dni           String  @unique @map("dni")
-  email         String? @unique @map("email")
-  firstName     String  @map("first_name")
-  secondName    String? @map("second_name")
-  firstSurname  String  @map("first_surname")
-  secondSurname String? @map("second_surname")
-  active        Boolean @default(true) @map("active")
+  id            Int      @id @default(autoincrement()) @map("id")
+  email         String   @unique @map("email")
+  firstName     String   @map("first_name")
+  secondName    String?  @map("second_name")
+  firstSurname  String   @map("first_surname")
+  secondSurname String?  @map("second_surname")
+  phoneNumbers  String[] @map("phone_numbers")
 
-  users User?
+  user            User?
+  employee        Employee?
+  customer        Customer?
+  identifications Identification[]
 
+  @@index(email)
   @@map("people")
+}
+
+enum IdentificationType {
+  DNI
+  PASSPORT
+  RUC
+}
+
+model Identification {
+  id     Int                @id @default(autoincrement())
+  type   IdentificationType @map("type")
+  value  String             @unique @map("value")
+  active Boolean            @default(true) @map("active")
+
+  personId Int    @map("person_id")
+  person   Person @relation(fields: [personId], references: [id])
+
+  @@map("identifications")
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 model User {
@@ -29,13 +55,190 @@ model User {
   role     UserRole @map("role")
   active   Boolean  @default(true) @map("active")
 
-  personId Int    @unique @map("person_id")
-  person   Person @relation(fields: [personId], references: [id])
+  personId Int?    @unique @map("person_id")
+  person   Person? @relation(fields: [personId], references: [id])
 
   @@map("users")
 }
 
-enum UserRole {
-  USER
-  ADMIN
+model Employee {
+  id           Int      @id @default(autoincrement())
+  contractDate DateTime @map("contract_date") @db.Date
+
+  personId Int     @unique @map("person_id")
+  person   Person  @relation(fields: [personId], references: [id])
+  routes   Route[]
+  tasks    Task[]
+  sales    Sale[]
+
+  @@map("employees")
+}
+
+model Customer {
+  id      Int    @id @default(autoincrement())
+  address String @map("address")
+
+  personId Int    @unique @map("person_id")
+  person   Person @relation(fields: [personId], references: [id])
+  zoneId   Int    @map("zone_id")
+  zone     Zone   @relation(fields: [zoneId], references: [id])
+  tasks    Task[]
+  sales    Sale[]
+
+  @@map("customers")
+}
+
+model City {
+  id   Int    @id @default(autoincrement())
+  name String @unique @map("name")
+
+  zones Zone[]
+
+  @@map("cities")
+}
+
+model Zone {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique @map("name")
+  description String? @map("description")
+
+  cityId    Int        @map("city_id")
+  city      City       @relation(fields: [cityId], references: [id])
+  customers Customer[]
+  routes    Route[]
+
+  @@map("zones")
+}
+
+model Route {
+  id   Int      @id @default(autoincrement())
+  date DateTime @map("date") @db.Date
+
+  employeeId Int      @map("employee_id")
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  zoneId     Int      @map("zone_id")
+  zone       Zone     @relation(fields: [zoneId], references: [id])
+
+  @@map("routes")
+}
+
+enum TaskType {
+  SALE
+  COLLECTION
+  QUOTATION
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  DONE
+}
+
+model Task {
+  id     Int        @id @default(autoincrement())
+  type   TaskType   @map("type")
+  status TaskStatus @map("status")
+  date   DateTime   @map("date") @db.Date
+
+  customerId Int        @map("customer_id")
+  customer   Customer   @relation(fields: [customerId], references: [id])
+  employeeId Int        @map("employee_id")
+  employee   Employee   @relation(fields: [employeeId], references: [id])
+  locations  Location[]
+
+  @@map("tasks")
+}
+
+enum LocationType {
+  START
+  END
+}
+
+model Location {
+  id       Int          @id @default(autoincrement())
+  type     LocationType @map("type")
+  lat      Float        @map("lat")
+  lng      Float        @map("lng")
+  dateTime DateTime     @map("date_time") @db.Timestamp(0)
+
+  taskId Int  @map("task_id")
+  task   Task @relation(fields: [taskId], references: [id])
+
+  @@map("locations")
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique @map("name")
+  description String? @map("description")
+  price       Float   @map("price")
+  stock       Int     @map("stock")
+
+  items Item[]
+
+  @@map("products")
+}
+
+model Sale {
+  id       Int      @id @default(autoincrement())
+  dateTime DateTime @map("date_time") @db.Timestamp(0)
+  total    Float    @map("total")
+
+  customerId  Int          @map("customer_id")
+  customer    Customer     @relation(fields: [customerId], references: [id])
+  employeeId  Int          @map("employee_id")
+  employee    Employee     @relation(fields: [employeeId], references: [id])
+  items       Item[]
+  collections Collection[]
+
+  @@map("sales")
+}
+
+model Item {
+  id       Int   @id @default(autoincrement())
+  quantity Int   @map("quantity")
+  price    Float @map("price")
+
+  productId Int     @map("product_id")
+  product   Product @relation(fields: [productId], references: [id])
+  saleId    Int     @map("sale_id")
+  sale      Sale    @relation(fields: [saleId], references: [id])
+
+  @@map("items")
+}
+
+model Collection {
+  id          Int      @id @default(autoincrement())
+  outstanding Float    @map("outstanding")
+  dueDate     DateTime @map("due_date") @db.Date
+
+  saleId   Int       @map("sale_id")
+  sale     Sale      @relation(fields: [saleId], references: [id])
+  payments Payment[]
+
+  @@map("collections")
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSED
+}
+
+enum PaymentMethod {
+  CASH
+  TRANSFER
+  CHECK
+}
+
+model Payment {
+  id       Int           @id @default(autoincrement())
+  amount   Float         @map("amount")
+  dateTime DateTime      @map("date_time") @db.Timestamp(0)
+  status   PaymentStatus @map("status")
+  method   PaymentMethod @map("method")
+
+  collectionId Int        @map("collection_id")
+  collection   Collection @relation(fields: [collectionId], references: [id])
+
+  @@map("payments")
 }
