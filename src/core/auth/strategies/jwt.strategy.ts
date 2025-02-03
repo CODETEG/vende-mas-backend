@@ -4,6 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 import { IJwtPayload } from '../types/jwt-payload.interface'
 import { User } from '@prisma/client'
 import { PrismaService } from 'src/global/prisma/prisma.service'
+import { Request } from 'express'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -12,6 +13,14 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       secretOrKey: process.env.JWT_SECRET!,
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     })
+  }
+
+  authenticate(req: Request, options?: unknown): void {
+    if (!req.headers.authorization) {
+      throw new UnauthorizedException('Token not found')
+    }
+
+    super.authenticate(req, options)
   }
 
   async validate(payload: IJwtPayload): Promise<User> {

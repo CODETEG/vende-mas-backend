@@ -22,11 +22,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     let status = HttpStatus.INTERNAL_SERVER_ERROR
     const errorResponse: IApiRes<null> = {
       success: false,
-      data: null,
       message: {
         content: ['Ocurrió un error inesperado'],
         displayable: true,
       },
+      data: null,
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { exception: _, ...rest } = exception

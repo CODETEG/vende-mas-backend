@@ -23,8 +23,8 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, IApiRes<T>> {
 
         return {
           success: true,
-          data: data || null,
           message,
+          data: data || null,
         }
       }),
     )
