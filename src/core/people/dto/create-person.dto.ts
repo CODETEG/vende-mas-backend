@@ -1,26 +1,21 @@
 import { Prisma } from '@prisma/client'
 import {
+  ArrayNotEmpty,
+  IsArray,
   IsBoolean,
   IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
-  Length,
 } from 'class-validator'
 import { IsUnique } from 'src/common/validators/unique.validator'
 
 export class CreatePersonDto
   implements Omit<Prisma.PersonCreateManyInput, 'id'>
 {
-  @IsNotEmpty()
-  @IsString()
-  @Length(9, 11, { message: 'dni must be between 9 and 11 characters' })
-  @IsUnique('person', 'dni')
-  dni: string
-
   @IsEmail()
-  @IsOptional()
-  email?: string
+  @IsUnique('person', 'email')
+  email: string
 
   @IsNotEmpty()
   @IsString()
@@ -41,4 +36,9 @@ export class CreatePersonDto
   @IsOptional()
   @IsBoolean()
   active?: boolean
+
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  phoneNumbers: string[]
 }

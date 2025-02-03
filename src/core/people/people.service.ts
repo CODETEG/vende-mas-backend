@@ -59,13 +59,4 @@ export class PeopleService {
       data: updatePersonDto,
     })
   }
-
-  async remove(id: number) {
-    await this.findOne(id)
-
-    return await this.prismaService.person.update({
-      where: { id },
-      data: { active: false },
-    })
-  }
 }
