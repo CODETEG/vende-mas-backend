@@ -5,7 +5,7 @@ import { User } from '@prisma/client'
 import { DisplayableException } from 'src/common/exceptions/displayable.exception'
 import { hashPassword } from 'src/common/utils/encrypter'
 import { PrismaService } from 'src/global/prisma/prisma.service'
-import { CrudService } from 'src/common/services/crud-service'
+import { CrudService } from 'src/common/services/crud.service'
 
 @Injectable()
 export class UsersService extends CrudService<

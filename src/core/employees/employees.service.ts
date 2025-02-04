@@ -3,7 +3,7 @@ import { CreateEmployeeDto } from './dto/create-employee.dto'
 import { UpdateEmployeeDto } from './dto/update-employee.dto'
 import { PrismaService } from 'src/global/prisma/prisma.service'
 import { Employee } from '@prisma/client'
-import { CrudService } from 'src/common/services/crud-service'
+import { CrudService } from 'src/common/services/crud.service'
 import { DisplayableException } from 'src/common/exceptions/displayable.exception'
 
 @Injectable()

@@ -18,11 +18,12 @@ export class IsUniqueConstraint implements ValidatorConstraintInterface {
     const [modelName, field] = args.constraints
 
     // @ts-expect-error - modelName is a string
-    const existingEntity = await this.prisma[modelName].findUnique({
+    const existingEntity = await this.prisma[modelName].findMany({
       where: { [field]: value },
     })
 
-    if (existingEntity) throw new BadRequestException(this.defaultMessage(args))
+    if (existingEntity.length > 0)
+      throw new BadRequestException(this.defaultMessage(args))
 
     return true
   }
