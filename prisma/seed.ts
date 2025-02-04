@@ -8,6 +8,7 @@ import { customers } from './data/customers'
 import { cities } from './data/cities'
 import { zones } from './data/zones'
 import { products } from './data/products'
+import { routes } from './data/routes'
 
 const prisma = new PrismaClient()
 
@@ -24,16 +25,20 @@ const main = async () => {
     data: cities,
   })
 
+  await prisma.employee.createMany({
+    data: employees,
+  })
+
+  await prisma.route.createMany({
+    data: routes,
+  })
+
   await prisma.zone.createMany({
     data: zones,
   })
 
   await prisma.user.createMany({
     data: users,
-  })
-
-  await prisma.employee.createMany({
-    data: employees,
   })
 
   await prisma.customer.createMany({

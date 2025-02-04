@@ -16,9 +16,10 @@ model Person {
   secondSurname String?  @map("second_surname")
   phoneNumbers  String[] @map("phone_numbers")
 
-  user            User?
-  employee        Employee?
-  customer        Customer?
+  user     User?
+  employee Employee?
+  customer Customer?
+
   identifications Identification[]
 
   @@index(email)
@@ -58,18 +59,21 @@ model User {
   personId Int?    @unique @map("person_id")
   person   Person? @relation(fields: [personId], references: [id])
 
+  comments Comment[]
+
   @@map("users")
 }
 
 model Employee {
   id           Int      @id @default(autoincrement())
   contractDate DateTime @map("contract_date") @db.Date
+  active       Boolean  @default(true) @map("active")
 
-  personId Int     @unique @map("person_id")
-  person   Person  @relation(fields: [personId], references: [id])
-  routes   Route[]
-  tasks    Task[]
-  sales    Sale[]
+  personId Int    @unique @map("person_id")
+  person   Person @relation(fields: [personId], references: [id])
+
+  routes Route[]
+  tasks  Task[]
 
   @@map("employees")
 }
@@ -82,8 +86,8 @@ model Customer {
   person   Person @relation(fields: [personId], references: [id])
   zoneId   Int    @map("zone_id")
   zone     Zone   @relation(fields: [zoneId], references: [id])
-  tasks    Task[]
-  sales    Sale[]
+
+  tasks Task[]
 
   @@map("customers")
 }
@@ -102,10 +106,12 @@ model Zone {
   name        String  @unique @map("name")
   description String? @map("description")
 
-  cityId    Int        @map("city_id")
-  city      City       @relation(fields: [cityId], references: [id])
+  cityId  Int   @map("city_id")
+  city    City  @relation(fields: [cityId], references: [id])
+  routeId Int   @map("route_id")
+  route   Route @relation(fields: [routeId], references: [id])
+
   customers Customer[]
-  routes    Route[]
 
   @@map("zones")
 }
@@ -116,8 +122,8 @@ model Route {
 
   employeeId Int      @map("employee_id")
   employee   Employee @relation(fields: [employeeId], references: [id])
-  zoneId     Int      @map("zone_id")
-  zone       Zone     @relation(fields: [zoneId], references: [id])
+
+  zones Zone[]
 
   @@map("routes")
 }
@@ -135,16 +141,23 @@ enum TaskStatus {
 }
 
 model Task {
-  id     Int        @id @default(autoincrement())
-  type   TaskType   @map("type")
-  status TaskStatus @map("status")
-  date   DateTime   @map("date") @db.Date
+  id             Int        @id @default(autoincrement())
+  type           TaskType   @map("type")
+  status         TaskStatus @map("status")
+  completionDate DateTime   @map("completion_date") @db.Date
+  assignedDate   DateTime?  @map("assigned_date") @db.Date
+  priority       Boolean    @default(false) @map("priority")
 
-  customerId Int        @map("customer_id")
-  customer   Customer   @relation(fields: [customerId], references: [id])
-  employeeId Int        @map("employee_id")
-  employee   Employee   @relation(fields: [employeeId], references: [id])
-  locations  Location[]
+  customerId            Int       @map("customer_id")
+  customer              Customer  @relation(fields: [customerId], references: [id])
+  completedByEmployeeId Int?      @map("completed_by_employee_id")
+  completedByEmployee   Employee? @relation(fields: [completedByEmployeeId], references: [id])
+
+  locations Location[]
+  comments  Comment[]
+
+  sale       Sale?
+  collection Collection?
 
   @@map("tasks")
 }
@@ -167,6 +180,23 @@ model Location {
   @@map("locations")
 }
 
+model Comment {
+  id       Int      @id @default(autoincrement())
+  content  String   @map("content")
+  dateTime DateTime @map("date_time") @db.Timestamp(0)
+
+  commentId Int?     @map("comment_id")
+  comment   Comment? @relation(fields: [commentId], references: [id], name: "CommentReplies")
+  taskId    Int      @map("task_id")
+  task      Task     @relation(fields: [taskId], references: [id])
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+
+  comments Comment[] @relation(name: "CommentReplies")
+
+  @@map("comments")
+}
+
 model Product {
   id          Int     @id @default(autoincrement())
   name        String  @unique @map("name")
@@ -180,14 +210,14 @@ model Product {
 }
 
 model Sale {
-  id       Int      @id @default(autoincrement())
-  dateTime DateTime @map("date_time") @db.Timestamp(0)
-  total    Float    @map("total")
+  id          Int      @id @default(autoincrement())
+  dateTime    DateTime @map("date_time") @db.Timestamp(0)
+  total       Float    @map("total")
+  outstanding Float    @map("outstanding")
 
-  customerId  Int          @map("customer_id")
-  customer    Customer     @relation(fields: [customerId], references: [id])
-  employeeId  Int          @map("employee_id")
-  employee    Employee     @relation(fields: [employeeId], references: [id])
+  taskId Int?  @unique @map("task_id")
+  task   Task? @relation(fields: [taskId], references: [id])
+
   items       Item[]
   collections Collection[]
 
@@ -208,12 +238,14 @@ model Item {
 }
 
 model Collection {
-  id          Int      @id @default(autoincrement())
-  outstanding Float    @map("outstanding")
-  dueDate     DateTime @map("due_date") @db.Date
+  id      Int      @id @default(autoincrement())
+  dueDate DateTime @map("due_date") @db.Date
 
-  saleId   Int       @map("sale_id")
-  sale     Sale      @relation(fields: [saleId], references: [id])
+  saleId Int   @map("sale_id")
+  sale   Sale  @relation(fields: [saleId], references: [id])
+  taskId Int?  @unique @map("task_id")
+  task   Task? @relation(fields: [taskId], references: [id])
+
   payments Payment[]
 
   @@map("collections")
