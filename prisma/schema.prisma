@@ -17,7 +17,6 @@ model Person {
   phoneNumbers  String[] @map("phone_numbers")
 
   user     User?
-  employee Employee?
   customer Customer?
 
   identifications Identification[]
@@ -59,7 +58,7 @@ model User {
   personId Int?    @unique @map("person_id")
   person   Person? @relation(fields: [personId], references: [id])
 
-  comments Comment[]
+  employee Employee?
 
   @@map("users")
 }
@@ -69,11 +68,12 @@ model Employee {
   contractDate DateTime @map("contract_date") @db.Date
   active       Boolean  @default(true) @map("active")
 
-  personId Int    @unique @map("person_id")
-  person   Person @relation(fields: [personId], references: [id])
+  userId Int  @unique @map("user_id")
+  user   User @relation(fields: [userId], references: [id])
 
-  routes Route[]
-  tasks  Task[]
+  routes   Route[]
+  tasks    Task[]
+  comments Comment[]
 
   @@map("employees")
 }
@@ -185,12 +185,12 @@ model Comment {
   content  String   @map("content")
   dateTime DateTime @map("date_time") @db.Timestamp(0)
 
-  commentId Int?     @map("comment_id")
-  comment   Comment? @relation(fields: [commentId], references: [id], name: "CommentReplies")
-  taskId    Int      @map("task_id")
-  task      Task     @relation(fields: [taskId], references: [id])
-  userId    Int      @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
+  commentId  Int?     @map("comment_id")
+  comment    Comment? @relation(fields: [commentId], references: [id], name: "CommentReplies")
+  taskId     Int      @map("task_id")
+  task       Task     @relation(fields: [taskId], references: [id])
+  employeeId Int      @map("employee_id")
+  employee   Employee @relation(fields: [employeeId], references: [id])
 
   comments Comment[] @relation(name: "CommentReplies")
 

@@ -25,6 +25,10 @@ const main = async () => {
     data: cities,
   })
 
+  await prisma.user.createMany({
+    data: users,
+  })
+
   await prisma.employee.createMany({
     data: employees,
   })
@@ -35,10 +39,6 @@ const main = async () => {
 
   await prisma.zone.createMany({
     data: zones,
-  })
-
-  await prisma.user.createMany({
-    data: users,
   })
 
   await prisma.customer.createMany({
