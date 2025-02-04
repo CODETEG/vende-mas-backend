@@ -55,8 +55,8 @@ model User {
   role     UserRole @map("role")
   active   Boolean  @default(true) @map("active")
 
-  personId Int?    @unique @map("person_id")
-  person   Person? @relation(fields: [personId], references: [id])
+  personId Int    @unique @map("person_id")
+  person   Person @relation(fields: [personId], references: [id])
 
   employee Employee?
 

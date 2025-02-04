@@ -37,6 +37,6 @@ export class PeopleController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePersonDto: UpdatePersonDto,
   ) {
-    return this.peopleService.update(+id, updatePersonDto)
+    return this.peopleService.update(id, updatePersonDto)
   }
 }

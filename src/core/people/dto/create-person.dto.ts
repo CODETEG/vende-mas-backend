@@ -2,9 +2,7 @@ import { Prisma } from '@prisma/client'
 import {
   ArrayNotEmpty,
   IsArray,
-  IsBoolean,
   IsEmail,
-  IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator'
@@ -13,32 +11,26 @@ import { IsUnique } from 'src/common/validators/unique.validator'
 export class CreatePersonDto
   implements Omit<Prisma.PersonCreateManyInput, 'id'>
 {
-  @IsEmail()
+  @IsEmail({}, { message: 'email must be a valid email address' })
   @IsUnique('person', 'email')
   email: string
 
-  @IsNotEmpty()
-  @IsString()
+  @IsString({ message: 'name must be a string' })
   firstName: string
 
-  @IsString()
+  @IsString({ message: 'secondName must be a string' })
   @IsOptional()
   secondName?: string
 
-  @IsNotEmpty()
-  @IsString()
+  @IsString({ message: 'firstSurname must be a string' })
   firstSurname: string
 
-  @IsString()
+  @IsString({ message: 'secondSurname must be a string' })
   @IsOptional()
   secondSurname?: string
 
-  @IsOptional()
-  @IsBoolean()
-  active?: boolean
-
-  @IsArray()
-  @ArrayNotEmpty()
-  @IsString({ each: true })
+  @IsArray({ message: 'phoneNumbers must be an array' })
+  @ArrayNotEmpty({ message: 'phoneNumbers must not be empty' })
+  @IsString({ each: true, message: 'phoneNumbers must be an array of strings' })
   phoneNumbers: string[]
 }

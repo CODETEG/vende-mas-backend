@@ -71,7 +71,7 @@ export class UsersService {
 
       if (alreadyExistPersonAssociated)
         throw new DisplayableException(
-          'Ya existe un usuario asociado a esta persona',
+          'Ya existe una persona asociada a este usuario',
           HttpStatus.CONFLICT,
         )
     }

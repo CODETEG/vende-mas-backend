@@ -11,6 +11,7 @@ import { CustomConfigService } from './global/config/config.service'
 import { PrismaService } from './global/prisma/prisma.service'
 import { CustomConfigModule } from './global/config/config.module'
 import { PrismaModule } from './global/prisma/prisma.module'
+import { EmployeesModule } from './core/employees/employees.module'
 @Module({
   imports: [
     PeopleModule,
@@ -18,6 +19,7 @@ import { PrismaModule } from './global/prisma/prisma.module'
     AuthModule,
     CustomConfigModule,
     PrismaModule,
+    EmployeesModule,
   ],
   providers: [
     AppService,
