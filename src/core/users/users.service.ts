@@ -2,62 +2,19 @@ import { HttpStatus, Injectable } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from '@prisma/client'
-import { PaginationDto } from 'src/common/dtos/pagination.dto'
 import { DisplayableException } from 'src/common/exceptions/displayable.exception'
-import { IApiPaginatedRes } from 'src/common/types/api-response.interface'
 import { hashPassword } from 'src/common/utils/encrypter'
 import { PrismaService } from 'src/global/prisma/prisma.service'
+import { CrudService } from 'src/common/services/crud-service'
 
 @Injectable()
-export class UsersService {
-  constructor(private readonly prismaService: PrismaService) {}
-
-  async create(createUserDto: CreateUserDto) {
-    const hashedPassword = hashPassword(createUserDto.password)
-
-    return await this.prismaService.user.create({
-      data: {
-        ...createUserDto,
-        password: hashedPassword,
-      },
-    })
-  }
-
-  async findAll({
-    limit,
-    page,
-  }: PaginationDto): Promise<IApiPaginatedRes<User>> {
-    const [entities, total] = await Promise.all([
-      this.prismaService.user.findMany({
-        take: limit,
-        skip: (page - 1) * limit,
-        include: { person: true },
-      }),
-      this.prismaService.user.count(),
-    ])
-
-    return {
-      records: entities,
-      total,
-      limit,
-      page,
-      pages: Math.ceil(total / limit),
-    }
-  }
-
-  async findOne(id: number) {
-    const entity = await this.prismaService.user.findUnique({
-      where: { id },
-      include: { person: true },
-    })
-
-    if (!entity)
-      throw new DisplayableException(
-        `El usuario con id ${id} no existe`,
-        HttpStatus.NOT_FOUND,
-      )
-
-    return entity
+export class UsersService extends CrudService<
+  User,
+  CreateUserDto,
+  UpdateUserDto
+> {
+  constructor(prismaService: PrismaService) {
+    super(prismaService, 'user')
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
@@ -85,15 +42,6 @@ export class UsersService {
         ...updateUserDto,
         password: hashedPassword,
       },
-    })
-  }
-
-  async remove(id: number) {
-    await this.findOne(id)
-
-    return await this.prismaService.user.update({
-      where: { id },
-      data: { active: false },
     })
   }
 }

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BadRequestException, Injectable } from '@nestjs/common'
+import { PrismaClient } from '@prisma/client'
 import {
   registerDecorator,
   ValidationOptions,
@@ -40,7 +41,7 @@ export class EntityExistsConstraint implements ValidatorConstraintInterface {
 }
 
 export function EntityExists(
-  model: string,
+  model: keyof PrismaClient,
   field: string = 'id',
   validationOptions?: ValidationOptions,
 ) {

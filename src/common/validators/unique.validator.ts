@@ -7,6 +7,7 @@ import {
 } from 'class-validator'
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/global/prisma/prisma.service'
+import { PrismaClient } from '@prisma/client'
 
 @Injectable()
 @ValidatorConstraint({ async: true })
@@ -32,7 +33,7 @@ export class IsUniqueConstraint implements ValidatorConstraintInterface {
 }
 
 export function IsUnique(
-  modelName: string,
+  modelName: keyof PrismaClient,
   field: string,
   validationOptions?: ValidationOptions,
 ) {
