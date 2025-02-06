@@ -6,12 +6,12 @@ import { Auth } from 'src/core/auth/decorators/auth.decorator'
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly service: AuthService) {}
 
   @Post('sign-in')
   @HttpCode(200)
   async signIn(@Body() dto: SignInDto) {
-    return this.authService.signIn(dto)
+    return this.service.signIn(dto)
   }
 
   @Get('profile')

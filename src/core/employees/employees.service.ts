@@ -16,6 +16,21 @@ export class EmployeesService extends BaseService<
     super(prismaService, 'employee')
   }
 
+  async create(createDto: CreateEmployeeDto) {
+    const alreadyExistUserAssociated =
+      await this.prismaService.employee.findUnique({
+        where: { userId: createDto.userId },
+      })
+
+    if (alreadyExistUserAssociated)
+      throw new DisplayableException(
+        'Ya existe un empleado asociada a este usuario',
+        HttpStatus.CONFLICT,
+      )
+
+    return await this.prismaService.employee.create({ data: createDto })
+  }
+
   async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
     await this.findOne(id)
 

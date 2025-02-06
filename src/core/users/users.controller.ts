@@ -16,33 +16,30 @@ import { PaginationDto } from 'src/common/dtos/pagination.dto'
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly service: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto)
+  create(@Body() dto: CreateUserDto) {
+    return this.service.create(dto)
   }
 
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
-    return this.usersService.findAll(paginationDto)
+    return this.service.findAll(paginationDto)
   }
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findOne(id)
+    return this.service.findOne(id)
   }
 
   @Patch(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
-    return this.usersService.update(id, updateUserDto)
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateUserDto) {
+    return this.service.update(id, dto)
   }
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.remove(id)
+    return this.service.remove(id)
   }
 }

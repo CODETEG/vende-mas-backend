@@ -17,6 +17,28 @@ export class UsersService extends BaseService<
     super(prismaService, 'user')
   }
 
+  async create(createDto: CreateUserDto) {
+    const alreadyExistPersonAssociated =
+      await this.prismaService.user.findUnique({
+        where: { personId: createDto.personId },
+      })
+
+    if (alreadyExistPersonAssociated)
+      throw new DisplayableException(
+        'Ya existe un usuario asociado a esta persona',
+        HttpStatus.CONFLICT,
+      )
+
+    const hashedPassword = hashPassword(createDto.password)
+
+    return await this.prismaService.user.create({
+      data: {
+        ...createDto,
+        password: hashedPassword,
+      },
+    })
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto) {
     await this.findOne(id)
 
@@ -28,7 +50,7 @@ export class UsersService extends BaseService<
 
       if (alreadyExistPersonAssociated)
         throw new DisplayableException(
-          'Ya existe una persona asociada a este usuario',
+          'Ya existe un usuario asociado a esta persona',
           HttpStatus.CONFLICT,
         )
     }

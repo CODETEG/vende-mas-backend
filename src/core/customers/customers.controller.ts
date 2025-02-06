@@ -6,20 +6,20 @@ import {
   Patch,
   Param,
   Delete,
-  ParseIntPipe,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common'
-import { EmployeesService } from './employees.service'
-import { CreateEmployeeDto } from './dto/create-employee.dto'
-import { UpdateEmployeeDto } from './dto/update-employee.dto'
+import { CustomersService } from './customers.service'
+import { CreateCustomerDto } from './dto/create-customer.dto'
+import { UpdateCustomerDto } from './dto/update-customer.dto'
 import { PaginationDto } from 'src/common/dtos/pagination.dto'
 
-@Controller('employees')
-export class EmployeesController {
-  constructor(private readonly service: EmployeesService) {}
+@Controller('customers')
+export class CustomersController {
+  constructor(private readonly service: CustomersService) {}
 
   @Post()
-  create(@Body() dto: CreateEmployeeDto) {
+  create(@Body() dto: CreateCustomerDto) {
     return this.service.create(dto)
   }
 
@@ -36,9 +36,9 @@ export class EmployeesController {
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UpdateEmployeeDto,
+    @Body() updateEmployeeDto: UpdateCustomerDto,
   ) {
-    return this.service.update(id, dto)
+    return this.service.update(id, updateEmployeeDto)
   }
 
   @Delete(':id')
