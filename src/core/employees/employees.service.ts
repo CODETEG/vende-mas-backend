@@ -3,11 +3,11 @@ import { CreateEmployeeDto } from './dto/create-employee.dto'
 import { UpdateEmployeeDto } from './dto/update-employee.dto'
 import { PrismaService } from 'src/global/prisma/prisma.service'
 import { Employee } from '@prisma/client'
-import { CrudService } from 'src/common/services/crud.service'
+import { BaseService } from 'src/common/services/base.service'
 import { DisplayableException } from 'src/common/exceptions/displayable.exception'
 
 @Injectable()
-export class EmployeesService extends CrudService<
+export class EmployeesService extends BaseService<
   Employee,
   CreateEmployeeDto,
   UpdateEmployeeDto
