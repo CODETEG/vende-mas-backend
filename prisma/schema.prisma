@@ -213,7 +213,7 @@ model Sale {
   id          Int      @id @default(autoincrement())
   dateTime    DateTime @map("date_time") @db.Timestamp(0)
   total       Float    @map("total")
-  outstanding Float    @map("outstanding")
+  outstanding Float?   @map("outstanding")
 
   taskId Int?  @unique @map("task_id")
   task   Task? @relation(fields: [taskId], references: [id])

@@ -13,6 +13,17 @@ import { CustomConfigModule } from './global/config/config.module'
 import { PrismaModule } from './global/prisma/prisma.module'
 import { EmployeesModule } from './core/employees/employees.module'
 import { CustomersModule } from './core/customers/customers.module'
+import { CitiesModule } from './core/cities/cities.module'
+import { RoutesModule } from './core/routes/routes.module'
+import { ZonesModule } from './core/zones/zones.module'
+import { ProductsModule } from './core/products/products.module'
+import { TasksModule } from './core/tasks/tasks.module'
+import { SalesModule } from './core/sales/sales.module'
+import { PaymentsModule } from './core/payments/payments.module'
+import { LocationsModule } from './core/locations/locations.module'
+import { CommentsModule } from './core/comments/comments.module'
+import { ItemsModule } from './core/items/items.module'
+import { CollectionsModule } from './core/collections/collections.module'
 @Module({
   imports: [
     PeopleModule,
@@ -22,6 +33,17 @@ import { CustomersModule } from './core/customers/customers.module'
     PrismaModule,
     EmployeesModule,
     CustomersModule,
+    CitiesModule,
+    RoutesModule,
+    ZonesModule,
+    ProductsModule,
+    TasksModule,
+    SalesModule,
+    CollectionsModule,
+    ItemsModule,
+    CommentsModule,
+    LocationsModule,
+    PaymentsModule,
   ],
   providers: [
     AppService,
