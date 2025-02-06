@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   ParseIntPipe,
   Query,
 } from '@nestjs/common'
@@ -36,10 +35,5 @@ export class CitiesController {
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateCityDto) {
     return this.service.update(id, dto)
-  }
-
-  @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.service.remove(id)
   }
 }

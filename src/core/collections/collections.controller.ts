@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   ParseIntPipe,
   Query,
 } from '@nestjs/common'
@@ -39,10 +38,5 @@ export class CollectionsController {
     @Body() dto: UpdateCollectionDto,
   ) {
     return this.service.update(id, dto)
-  }
-
-  @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.service.remove(id)
   }
 }

@@ -79,8 +79,9 @@ model Employee {
 }
 
 model Customer {
-  id      Int    @id @default(autoincrement())
-  address String @map("address")
+  id      Int     @id @default(autoincrement())
+  address String  @map("address")
+  active  Boolean @default(true) @map("active")
 
   personId Int    @unique @map("person_id")
   person   Person @relation(fields: [personId], references: [id])
@@ -125,6 +126,7 @@ model Route {
 
   zones Zone[]
 
+  @@unique([date, employeeId])
   @@map("routes")
 }
 
@@ -144,7 +146,7 @@ model Task {
   id             Int        @id @default(autoincrement())
   type           TaskType   @map("type")
   status         TaskStatus @map("status")
-  completionDate DateTime   @map("completion_date") @db.Date
+  completionDate DateTime?  @map("completion_date") @db.Date
   assignedDate   DateTime?  @map("assigned_date") @db.Date
   priority       Boolean    @default(false) @map("priority")
 
@@ -203,6 +205,7 @@ model Product {
   description String? @map("description")
   price       Float   @map("price")
   stock       Int     @map("stock")
+  active      Boolean @default(true) @map("active")
 
   items Item[]
 
@@ -213,7 +216,7 @@ model Sale {
   id          Int      @id @default(autoincrement())
   dateTime    DateTime @map("date_time") @db.Timestamp(0)
   total       Float    @map("total")
-  outstanding Float?   @map("outstanding")
+  outstanding Float    @default(0) @map("outstanding")
 
   taskId Int?  @unique @map("task_id")
   task   Task? @relation(fields: [taskId], references: [id])

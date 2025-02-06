@@ -1,4 +1,5 @@
 import { Prisma, TaskStatus, TaskType } from '@prisma/client'
+import { Type } from 'class-transformer'
 import {
   IsBoolean,
   IsDate,
@@ -15,11 +16,14 @@ export class CreateTaskDto implements Omit<Prisma.TaskCreateManyInput, 'id'> {
   @IsEnum(TaskStatus)
   status: TaskStatus
 
+  @IsOptional()
   @IsDate({ message: 'completionDate must be a Date' })
-  completionDate: Date
+  @Type(() => Date)
+  completionDate?: Date
 
   @IsOptional()
   @IsDate({ message: 'assignedDate must be a Date' })
+  @Type(() => Date)
   assignedDate?: Date
 
   @IsOptional()

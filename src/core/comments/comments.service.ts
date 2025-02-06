@@ -13,4 +13,14 @@ export class CommentsService extends BaseService<
   constructor(prismaService: PrismaService) {
     super(prismaService, 'comment')
   }
+
+  async remove(id: number) {
+    const comment = await this.findOne(id)
+
+    await this.prismaService.comment.delete({
+      where: { id },
+    })
+
+    return comment
+  }
 }

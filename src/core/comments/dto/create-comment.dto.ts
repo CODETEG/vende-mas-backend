@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client'
+import { Type } from 'class-transformer'
 import { IsDate, IsOptional, IsPositive, IsString } from 'class-validator'
 import { EntityExists } from 'src/common/validators/entity-exists.validator'
 
@@ -9,6 +10,7 @@ export class CreateCommentDto
   content: string
 
   @IsDate({ message: 'dateTime must be a Date' })
+  @Type(() => Date)
   dateTime: Date
 
   @IsOptional()
